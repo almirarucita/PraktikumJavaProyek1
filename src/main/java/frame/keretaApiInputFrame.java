@@ -25,23 +25,55 @@ public class keretaApiInputFrame extends JFrame {
     public keretaApiInputFrame() {
         simpanButton.addActionListener(e -> {
             String jenis = jenisTextField.getText();
+            if(jenis.equals("")){
+                JOptionPane.showMessageDialog(null,
+                        "Isi jenis kereta api", "" +
+                                "validasi validasi data kosong",
+                        JOptionPane.WARNING_MESSAGE);
+                jenisTextField.requestFocus();
+                return;
+            }
+
             Connection c = Koneksi.getConnection();
             PreparedStatement ps;
             try {
                 if (id == 0) {
-                    String insertSQL = "INSERT INTO keretaapi VALUES (NULL, ? )";
-                    ps = c.prepareStatement(insertSQL);
+                    String cekSQL = "SELECT * FROM keretaapi WHERE jenis = ?";
+                    ps = c.prepareStatement(cekSQL);
                     ps.setString(1, jenis);
-                    ps.executeUpdate();
-                    dispose();
-
+                    ResultSet rs = ps.executeQuery();
+                    if (rs.next()) {
+                        JOptionPane.showMessageDialog(null,
+                                "Data jenis keretaapi sudah ada",
+                                "Validasi data sama",
+                                JOptionPane.WARNING_MESSAGE);
+                    }else {
+                        String insertSQL = "INSERT INTO keretaapi SET jenis = ?";
+                        ps = c.prepareStatement(insertSQL);
+                        ps.setString(1, jenis);
+                        ps.executeUpdate();
+                        dispose();
+                    }
                 } else {
-                    String updateSQL = "UPDATE keretaapi SET jenis = ? WHERE id = ?";
-                    ps = c.prepareStatement(updateSQL);
+                    String cekSQL = "SELECT * FROM keretaapi WHERE jenis = ?";
+                    ps = c.prepareStatement(cekSQL);
                     ps.setString(1, jenis);
-                    ps.setInt(2, id);
-                    ps.executeUpdate();
-                    dispose();
+                    ResultSet rs = ps.executeQuery();
+                    if (rs.next()) {
+                        JOptionPane.showMessageDialog(null,
+                                "Data jenis keretaapi sudah ada",
+                                "Validasi data sama",
+                                JOptionPane.WARNING_MESSAGE);
+                    }else {
+                        String updateSQL = "UPDATE keretaapi SET jenis = ? WHERE id = ?";
+                        ps = c.prepareStatement(updateSQL);
+                        ps.setString(1, jenis);
+                        ps.setInt(2, id);
+                        ps.executeUpdate();
+                        dispose();
+
+                    }
+
                 }
             } catch (SQLException ex) {
                 throw new RuntimeException(ex);

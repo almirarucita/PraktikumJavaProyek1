@@ -75,8 +75,18 @@ public class keretaApiviewframe extends JFrame {
             }
         });
         caributton.addActionListener(e -> {
+
+            String keyword = caritextField1.getText();
+            if(keyword.equals("")){
+                JOptionPane.showMessageDialog(null,
+                        "Isi kata kunci pencarian", "" +
+                        "validasi kata kunci pencarian kosong",
+                        JOptionPane.WARNING_MESSAGE);
+                caritextField1.requestFocus();
+                return;
+            }
             Connection c = Koneksi.getConnection();
-            String keyword = "%" + caritextField1.getText() + "%";
+            keyword = "%" + caritextField1.getText() + "%";
             String searchSQL = "SELECT * FROM keretaapi WHERE jenis like ?";
             try {
                 PreparedStatement ps = c.prepareStatement(searchSQL);
