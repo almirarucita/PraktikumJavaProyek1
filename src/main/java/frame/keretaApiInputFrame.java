@@ -5,28 +5,44 @@ import helpers.Koneksi;
 import javax.swing.*;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 
-public class keretaApiInputFrame extends JFrame{
+public class keretaApiInputFrame extends JFrame {
     private JPanel mainPanel;
     private JTextField idTextField;
     private JTextField jenisTextField;
     private JButton simpanButton;
     private JButton batalButton;
 
+    private int id;
 
-    public keretaApiInputFrame(){
+    public void setId(int id) {
+        this.id = id;
+    }
+
+
+    public keretaApiInputFrame() {
         simpanButton.addActionListener(e -> {
             String jenis = jenisTextField.getText();
             Connection c = Koneksi.getConnection();
             PreparedStatement ps;
-
-            String insertSQL = "INSERT INTO keretaapi VALUES (NULL, ? )";
             try {
-                ps = c.prepareStatement(insertSQL);
-                ps.setString(1,jenis);
-                ps.executeUpdate();
-                dispose();
+                if (id == 0) {
+                    String insertSQL = "INSERT INTO keretaapi VALUES (NULL, ? )";
+                    ps = c.prepareStatement(insertSQL);
+                    ps.setString(1, jenis);
+                    ps.executeUpdate();
+                    dispose();
+
+                } else {
+                    String updateSQL = "UPDATE keretaapi SET jenis = ? WHERE id = ?";
+                    ps = c.prepareStatement(updateSQL);
+                    ps.setString(1, jenis);
+                    ps.setInt(2, id);
+                    ps.executeUpdate();
+                    dispose();
+                }
             } catch (SQLException ex) {
                 throw new RuntimeException(ex);
             }
@@ -36,11 +52,29 @@ public class keretaApiInputFrame extends JFrame{
         });
         init();
     }
+
     public void init() {
         setContentPane(mainPanel);
         setTitle("Input KeretaApi");
         pack();
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         setLocationRelativeTo(null);
+    }
+
+    public void isiKomponen() {
+        Connection c = Koneksi.getConnection();
+        String findSQL = "SELECT * FROM keretaapi WHERE id = ?";
+        PreparedStatement ps = null;
+        try {
+            ps = c.prepareStatement(findSQL);
+            ps.setInt(1, id);
+            ResultSet rs = ps.executeQuery();
+            if (rs.next()) {
+                idTextField.setText(String.valueOf(rs.getInt("id")));
+                jenisTextField.setText(rs.getString("jenis"));
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
     }
 }

@@ -23,6 +23,24 @@ public class keretaApiviewframe extends JFrame {
     private JButton tutupButton;
 
     public keretaApiviewframe() {
+        ubahButton.addActionListener(e -> {
+            int barisTerpilih = viewTable.getSelectedRow();
+            if(barisTerpilih < 0){
+                JOptionPane.showMessageDialog(null,
+                        "Pilih data Dulu",
+                        "Validasi pilih data",
+                        JOptionPane.WARNING_MESSAGE);
+                return;
+            }
+
+            TableModel tm = viewTable.getModel();
+            int id = Integer.parseInt(tm.getValueAt(barisTerpilih,0).toString());
+            keretaApiInputFrame inputFrame = new keretaApiInputFrame();
+            inputFrame.setId(id);
+            inputFrame.isiKomponen();
+            inputFrame.setVisible(true);
+
+        });
         tambahButton.addActionListener(e -> {
             keretaApiInputFrame inputFrame = new keretaApiInputFrame();
             inputFrame.setVisible(true);
@@ -30,7 +48,10 @@ public class keretaApiviewframe extends JFrame {
         hapusButton.addActionListener(e -> {
             int barisTerpilih = viewTable.getSelectedRow();
             if(barisTerpilih < 0){
-                JOptionPane.showMessageDialog(null,"Pilih data dulu");
+                JOptionPane.showMessageDialog(null,
+                        "Pilih data Dulu",
+                        "Validasi pilih data",
+                        JOptionPane.WARNING_MESSAGE);
                 return;
             }
             int pilihan = JOptionPane.showConfirmDialog(null,
@@ -41,6 +62,7 @@ public class keretaApiviewframe extends JFrame {
             if (pilihan == 0 ){
                 TableModel tm = viewTable.getModel();
                 int id = Integer.parseInt(tm.getValueAt(barisTerpilih,0).toString());
+
                 Connection c =Koneksi.getConnection();
                 String deleteSQL = "DELETE FROM keretaapi WHERE id = ?";
                 try {
