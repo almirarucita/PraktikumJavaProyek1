@@ -28,7 +28,7 @@
           <component id="f4b53" class="javax.swing.JButton" binding="caributton">
             <constraints border-constraint="East"/>
             <properties>
-              <text value="Button"/>
+              <text value="Cari"/>
             </properties>
           </component>
         </children>

@@ -1,5 +1,6 @@
 package frame;
 
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import helpers.Koneksi;
 
 import javax.swing.*;
@@ -22,6 +23,10 @@ public class keretaApiviewframe extends JFrame {
     private JButton tutupButton;
 
     public keretaApiviewframe() {
+        tambahButton.addActionListener(e -> {
+            keretaApiInputFrame inputFrame = new keretaApiInputFrame();
+            inputFrame.setVisible(true);
+        });
         hapusButton.addActionListener(e -> {
             int barisTerpilih = viewTable.getSelectedRow();
             if(barisTerpilih < 0){
@@ -98,7 +103,7 @@ public class keretaApiviewframe extends JFrame {
         try {
             Statement s = c.createStatement();
             ResultSet rs = s.executeQuery(selectSQL);
-            String header[] = {"Id", "Jenis"};
+            String[] header = {"Id", "Jenis"};
             DefaultTableModel dtm = new DefaultTableModel(header, 0);
             viewTable.setModel(dtm);
 
